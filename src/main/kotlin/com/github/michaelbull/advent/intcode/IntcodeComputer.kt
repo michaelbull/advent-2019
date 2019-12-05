@@ -15,23 +15,6 @@ class IntcodeComputer {
             _memory = value.toMutableList()
         }
 
-    val output: Int
-        get() = _memory[OUTPUT_ADDRESS]
-
-    var noun: Int
-        get() = _memory[NOUN_ADDRESS]
-        set(value) {
-            require(value in NOUN_RANGE) { "noun must be in range [$NOUN_RANGE], but was $value" }
-            _memory[NOUN_ADDRESS] = value
-        }
-
-    var verb: Int
-        get() = _memory[VERB_ADDRESS]
-        set(value) {
-            require(value in VERB_RANGE) { "verb must be in range [$VERB_RANGE], but was $value" }
-            _memory[VERB_ADDRESS] = value
-        }
-
     var inputs: List<Int> = emptyList()
 
     val outputs: List<Int>
@@ -57,14 +40,14 @@ class IntcodeComputer {
         }
     }
 
+    operator fun set(address: Int, value: Int) {
+        _memory[address] = value
+    }
+
     private fun reset() {
         instructionPointer = 0
         inputPointer = 0
         _outputs.clear()
-    }
-
-    private fun set(address: Int, value: Int) {
-        _memory[address] = value
     }
 
     private fun Instruction.run() {
@@ -86,14 +69,5 @@ class IntcodeComputer {
             instructionPointer = pointer
             modifiedInstructionPointer = true
         }
-    }
-
-    companion object {
-        const val OUTPUT_ADDRESS = 0
-        const val NOUN_ADDRESS = 1
-        const val VERB_ADDRESS = 2
-
-        val NOUN_RANGE = 0..99
-        val VERB_RANGE = 0..99
     }
 }
