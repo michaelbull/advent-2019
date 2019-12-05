@@ -16,8 +16,8 @@ class Day2ExamplesTest {
 
     @ArgumentsSource(Examples::class)
     @ParameterizedTest(name = "{0} becomes {1}")
-    fun examples(input: String, expected: String) {
-        computer.read(input.toIntcode())
+    fun examples(program: String, expected: String) {
+        computer.memory = program.toIntcode()
         computer.compute()
 
         val actual = computer.memory.joinToString(",")

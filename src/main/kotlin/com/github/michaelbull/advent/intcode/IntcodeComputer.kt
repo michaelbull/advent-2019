@@ -3,11 +3,17 @@ package com.github.michaelbull.advent.intcode
 class IntcodeComputer {
 
     private var instructionPointer = 0
+    private var inputPointer = 0
+    private var modifiedInstructionPointer = false
+    private val _outputs = mutableListOf<Int>()
     private lateinit var _memory: MutableList<Int>
     private lateinit var currentInstruction: Instruction
 
-    val memory: Intcode
+    var memory: Intcode
         get() = _memory.toList()
+        set(value) {
+            _memory = value.toMutableList()
+        }
 
     val output: Int
         get() = _memory[OUTPUT_ADDRESS]
@@ -26,54 +32,39 @@ class IntcodeComputer {
             _memory[VERB_ADDRESS] = value
         }
 
-    fun read(intcode: Intcode) {
-        _memory = intcode.toMutableList()
-        instructionPointer = 0
-    }
+    var inputs: List<Int> = emptyList()
+
+    val outputs: List<Int>
+        get() = _outputs
 
     fun compute() {
+        reset()
+
         while (true) {
-            currentInstruction = readInstruction()
+            val reader = InstructionReader(_memory, instructionPointer)
+            modifiedInstructionPointer = false
+            currentInstruction = reader.read()
 
             if (currentInstruction == Instruction.Halt) {
                 break
             } else {
                 currentInstruction.run()
-                instructionPointer += currentInstruction.size
+
+                if (!modifiedInstructionPointer) {
+                    instructionPointer += currentInstruction.opcode.parameters + 1
+                }
             }
         }
     }
 
-    private fun getParam(offset: Int): Int {
-        val address = instructionPointer + offset
-        return _memory[address]
-    }
-
-    private fun dereferenceParam(offset: Int): Int {
-        val address = getParam(offset)
-        return _memory[address]
+    private fun reset() {
+        instructionPointer = 0
+        inputPointer = 0
+        _outputs.clear()
     }
 
     private fun set(address: Int, value: Int) {
         _memory[address] = value
-    }
-
-    private fun readInstruction(): Instruction {
-        return when (_memory[instructionPointer].toOpcode()) {
-            Opcode.Halt -> Instruction.Halt
-
-            Opcode.Add -> Instruction.Add(
-                left = dereferenceParam(1),
-                right = dereferenceParam(2),
-                targetAddress = getParam(3)
-            )
-
-            Opcode.Multiply -> Instruction.Multiply(
-                left = dereferenceParam(1),
-                right = dereferenceParam(2),
-                targetAddress = getParam(3)
-            )
-        }
     }
 
     private fun Instruction.run() {
@@ -81,6 +72,19 @@ class IntcodeComputer {
             is Instruction.Halt -> error("Cannot run $this")
             is Instruction.Add -> set(targetAddress, left + right)
             is Instruction.Multiply -> set(targetAddress, left * right)
+            is Instruction.Input -> set(targetAddress, inputs[inputPointer++])
+            is Instruction.Output -> _outputs += value
+            is Instruction.JumpIfTrue -> jumpIf(pointer) { value != 0 }
+            is Instruction.JumpIfFalse -> jumpIf(pointer) { value == 0 }
+            is Instruction.LessThan -> set(targetAddress, if (left < right) 1 else 0)
+            is Instruction.Equals -> set(targetAddress, if (left == right) 1 else 0)
+        }
+    }
+
+    private inline fun jumpIf(pointer: Int, predicate: () -> Boolean) {
+        if (predicate()) {
+            instructionPointer = pointer
+            modifiedInstructionPointer = true
         }
     }
 
