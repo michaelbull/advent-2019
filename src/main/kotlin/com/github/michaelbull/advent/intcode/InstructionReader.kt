@@ -10,10 +10,10 @@ class InstructionReader(
     private lateinit var modes: String
 
     fun read(): Instruction {
-        val first = memory[instructionPointer].toString()
-        val opcodeString = first.substring(max(first.length - 2, 0), first.length)
-        val opcode = opcodeString.toInt().toOpcode()
-        modes = first.substring(0, first.length - opcodeString.length).reversed()
+        val value = memory[instructionPointer].toString()
+        val opcodeStart = max(value.length - OPCODE_LENGTH, 0)
+        val opcode = value.substring(opcodeStart, value.length).toInt().toOpcode()
+        modes = value.dropLast(OPCODE_LENGTH).reversed()
 
         return when (opcode) {
             Opcode.Halt -> Instruction.Halt
@@ -95,5 +95,9 @@ class InstructionReader(
 
     private fun Intcode.address(number: Int): Int {
         return this[instructionPointer + number]
+    }
+
+    private companion object {
+        private const val OPCODE_LENGTH = 2
     }
 }
