@@ -8,14 +8,9 @@ fun readLocalOrbits(): OrbitMap {
 }
 
 fun List<String>.toOrbitMap(): OrbitMap {
-    val orbits = map { line ->
-        val parts = line.split(")")
-        val obj = parts[0]
-        val orbiter = parts[1]
-        Pair(orbiter, obj)
-    }.toMap()
-
-    return OrbitMap(orbits)
+    return map { it.split(")") }
+        .associateBy({ it[1] }, { it[0] })
+        .let(::OrbitMap)
 }
 
 fun main() {
