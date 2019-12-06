@@ -59,9 +59,13 @@ class IntcodeComputer {
             is Instruction.Output -> _outputs += value
             is Instruction.JumpIfTrue -> jumpIf(pointer) { value != 0 }
             is Instruction.JumpIfFalse -> jumpIf(pointer) { value == 0 }
-            is Instruction.LessThan -> set(targetAddress, if (left < right) 1 else 0)
-            is Instruction.Equals -> set(targetAddress, if (left == right) 1 else 0)
+            is Instruction.LessThan -> setIf(targetAddress) { left < right }
+            is Instruction.Equals -> setIf(targetAddress) { left == right }
         }
+    }
+
+    private inline fun setIf(address: Int, predicate: () -> Boolean) {
+        set(address, if (predicate()) 1 else 0)
     }
 
     private inline fun jumpIf(pointer: Int, predicate: () -> Boolean) {
