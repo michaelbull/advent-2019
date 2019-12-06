@@ -1,8 +1,8 @@
 package com.github.michaelbull.advent.intcode
 
-sealed class Instruction(val opcode: Opcode) {
+sealed class Instruction(val parameters: Int = 0) {
 
-    object Halt : Instruction(Opcode.Halt) {
+    object Halt : Instruction(parameters = 0) {
         override fun toString() = "Halt"
     }
 
@@ -10,41 +10,41 @@ sealed class Instruction(val opcode: Opcode) {
         val left: Int,
         val right: Int,
         val targetAddress: Int
-    ) : Instruction(Opcode.Add)
+    ) : Instruction(parameters = 3)
 
     data class Multiply(
         val left: Int,
         val right: Int,
         val targetAddress: Int
-    ) : Instruction(Opcode.Multiply)
+    ) : Instruction(parameters = 3)
 
     data class Input(
         val targetAddress: Int
-    ) : Instruction(Opcode.Input)
+    ) : Instruction(parameters = 1)
 
     data class Output(
         val value: Int
-    ) : Instruction(Opcode.Output)
+    ) : Instruction(parameters = 1)
 
     data class JumpIfTrue(
         val value: Int,
         val pointer: Int
-    ) : Instruction(Opcode.JumpIfTrue)
+    ) : Instruction(parameters = 2)
 
     data class JumpIfFalse(
         val value: Int,
         val pointer: Int
-    ) : Instruction(Opcode.JumpIfFalse)
+    ) : Instruction(parameters = 2)
 
     data class LessThan(
         val left: Int,
         val right: Int,
         val targetAddress: Int
-    ) : Instruction(Opcode.LessThan)
+    ) : Instruction(parameters = 3)
 
     data class Equals(
         val left: Int,
         val right: Int,
         val targetAddress: Int
-    ) : Instruction(Opcode.Equals)
+    ) : Instruction(parameters = 3)
 }

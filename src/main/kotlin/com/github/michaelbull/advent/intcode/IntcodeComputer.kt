@@ -34,7 +34,7 @@ class IntcodeComputer {
                 currentInstruction.run()
 
                 if (!modifiedInstructionPointer) {
-                    instructionPointer += currentInstruction.opcode.parameters + 1
+                    instructionPointer += currentInstruction.parameters + 1
                 }
             }
         }

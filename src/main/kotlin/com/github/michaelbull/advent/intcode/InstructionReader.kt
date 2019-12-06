@@ -62,6 +62,21 @@ class InstructionReader(
         }
     }
 
+    private fun Int.toOpcode(): Opcode {
+        return when (this) {
+            1 -> Opcode.Add
+            2 -> Opcode.Multiply
+            3 -> Opcode.Input
+            4 -> Opcode.Output
+            5 -> Opcode.JumpIfTrue
+            6 -> Opcode.JumpIfFalse
+            7 -> Opcode.LessThan
+            8 -> Opcode.Equals
+            99 -> Opcode.Halt
+            else -> error("Unknown opcode $this")
+        }
+    }
+
     private fun parameterMode(number: Int): ParameterMode {
         return modes.getOrNull(number - 1)
             ?.let(Character::getNumericValue)
