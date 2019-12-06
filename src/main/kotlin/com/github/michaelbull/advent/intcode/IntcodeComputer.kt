@@ -7,7 +7,6 @@ class IntcodeComputer {
     private var modifiedInstructionPointer = false
     private val _outputs = mutableListOf<Int>()
     private lateinit var _memory: MutableList<Int>
-    private lateinit var currentInstruction: Instruction
 
     var memory: Intcode
         get() = _memory.toList()
@@ -24,17 +23,18 @@ class IntcodeComputer {
         reset()
 
         while (true) {
-            val reader = InstructionReader(_memory, instructionPointer)
             modifiedInstructionPointer = false
-            currentInstruction = reader.read()
 
-            if (currentInstruction == Instruction.Halt) {
+            val reader = InstructionReader(_memory, instructionPointer)
+            val instruction = reader.read()
+
+            if (instruction == Instruction.Halt) {
                 break
             } else {
-                currentInstruction.run()
+                instruction.run()
 
                 if (!modifiedInstructionPointer) {
-                    instructionPointer += currentInstruction.parameters + 1
+                    instructionPointer += instruction.parameters + 1
                 }
             }
         }
