@@ -14,7 +14,7 @@ suspend fun Intcode.part2(): Int {
 }
 
 suspend fun Intcode.feedbackLoopThrusterSignal(amplifiers: List<Amplifier>): Int {
-    val computers = amplifiers.associateWith { com.github.michaelbull.advent.intcode.IntcodeComputer() }
+    val computers = amplifiers.associateWith { IntcodeComputer() }
 
     return kotlinx.coroutines.coroutineScope {
         for (i in 0 until amplifiers.size - 1) {

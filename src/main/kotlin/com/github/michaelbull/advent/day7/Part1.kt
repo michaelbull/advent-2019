@@ -1,6 +1,7 @@
 package com.github.michaelbull.advent.day7
 
 import com.github.michaelbull.advent.intcode.Intcode
+import com.github.michaelbull.advent.intcode.IntcodeComputer
 
 suspend fun Intcode.part1(): Int {
     return highestThrusterSignal(
@@ -10,7 +11,7 @@ suspend fun Intcode.part1(): Int {
 }
 
 suspend fun Intcode.thrusterSignal(amplifiers: List<Amplifier>): Int {
-    val computer = com.github.michaelbull.advent.intcode.IntcodeComputer()
+    val computer = IntcodeComputer()
     var input = 0
 
     for (amplifier in amplifiers) {
