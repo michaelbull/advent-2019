@@ -20,15 +20,12 @@ fun Intcode.part1(): Int {
 
 inline fun Intcode.highestThrusterSignal(
     phaseSettings: IntArray,
-    crossinline getSignal: IntcodeComputer.(IntArray) -> Int
+    crossinline getSignal: Intcode.(IntArray) -> Int
 ): Int {
     var highest = -1
 
     phaseSettings.forEachPermutation { permutation ->
-        val computer = IntcodeComputer()
-        computer.memory = this
-
-        val signal = computer.getSignal(permutation)
+        val signal = getSignal(permutation)
 
         if (highest == -1 || signal > highest) {
             highest = signal
@@ -42,24 +39,28 @@ inline fun Intcode.highestThrusterSignal(
     }
 }
 
-fun IntcodeComputer.thrusterSignal(phaseSettings: IntArray): Int {
+fun Intcode.thrusterSignal(phaseSettings: IntArray): Int {
+    val amplifiers = phaseSettings.toAmplifiers()
+    val computer = IntcodeComputer()
+
     var input = 0
 
-    for (phaseSetting in phaseSettings) {
-        onInput { index ->
+    for (amplifier in amplifiers) {
+        computer.onInput { index ->
             when (index) {
-                0 -> phaseSetting
+                0 -> amplifier.phaseSetting
                 1 -> input
                 else -> error("No input at $index")
             }
         }
 
-        onOutput { signal ->
+        computer.onOutput { signal ->
             input = signal
         }
 
-        reset()
-        compute()
+        computer.reset()
+        computer.memory = this
+        computer.compute()
     }
 
     return input

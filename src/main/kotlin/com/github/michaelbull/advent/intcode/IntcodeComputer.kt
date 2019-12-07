@@ -5,17 +5,12 @@ class IntcodeComputer {
     private var instructionPointer = 0
     private var inputPointer = 0
     private var modifiedInstructionPointer = false
-    private lateinit var _memory: MutableList<Int>
+    private var _memory = mutableListOf<Int>()
 
     var memory: Intcode
         get() = _memory.toList()
         set(value) {
             _memory = value.toMutableList()
-        }
-
-    val isFinished: Boolean
-        get() {
-            return instructionPointer == memory.lastIndex
         }
 
     private lateinit var onInput: (Int) -> Int
@@ -80,5 +75,9 @@ class IntcodeComputer {
             instructionPointer = pointer
             modifiedInstructionPointer = true
         }
+    }
+
+    override fun toString(): String {
+        return "IntcodeComputer(memory=$_memory)"
     }
 }

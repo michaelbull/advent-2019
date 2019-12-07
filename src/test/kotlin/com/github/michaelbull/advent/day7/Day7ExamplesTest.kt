@@ -1,7 +1,6 @@
 package com.github.michaelbull.advent.day7
 
 import com.github.michaelbull.advent.intcode.Intcode
-import com.github.michaelbull.advent.intcode.IntcodeComputer
 import com.github.michaelbull.advent.intcode.toIntcode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -16,10 +15,7 @@ class Day7ExamplesTest {
     @ArgumentsSource(Part1Examples::class)
     @ParameterizedTest(name = "max thruster signal {2} (from phase setting sequence {1}): {0}")
     fun part1Examples(program: Intcode, phaseSettings: IntArray, expectedSignal: Int) {
-        val computer = IntcodeComputer()
-        computer.memory = program
-
-        val actualSignal = computer.thrusterSignal(phaseSettings)
+        val actualSignal = program.thrusterSignal(phaseSettings)
         assertEquals(expectedSignal, actualSignal)
     }
 
