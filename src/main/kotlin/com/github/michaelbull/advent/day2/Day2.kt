@@ -40,7 +40,7 @@ fun IntcodeComputer.part1(program: Intcode): Int {
     noun = 12
     verb = 2
     reset()
-    compute()
+    computeBlocking()
     return output
 }
 
@@ -51,7 +51,7 @@ fun IntcodeComputer.part2(program: Intcode): Int {
             noun = candidateNoun
             verb = candidateVerb
             reset()
-            compute()
+            computeBlocking()
 
             if (output == 19690720) {
                 return 100 * candidateNoun + candidateVerb

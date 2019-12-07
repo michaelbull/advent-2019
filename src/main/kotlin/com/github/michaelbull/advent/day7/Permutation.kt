@@ -1,9 +1,9 @@
 package com.github.michaelbull.advent.day7
 
-fun IntArray.forEachPermutation(
+suspend fun IntArray.forEachPermutation(
     from: Int = 0,
     to: Int = size,
-    action: (IntArray) -> Unit = {}
+    action: suspend (IntArray) -> Unit = {}
 ) {
     if (from >= to) {
         action(this)

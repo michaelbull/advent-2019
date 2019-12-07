@@ -19,7 +19,7 @@ class Day2ExamplesTest {
     fun examples(program: String, expected: String) {
         computer.memory = program.toIntcode()
         computer.reset()
-        computer.compute()
+        computer.computeBlocking()
 
         val actual = computer.memory.joinToString(",")
         assertEquals(expected, actual)

@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent.intcode
 
+import kotlinx.coroutines.runBlocking
+
 class IntcodeComputer {
 
     private var instructionPointer = 0
@@ -13,14 +15,14 @@ class IntcodeComputer {
             _memory = value.toMutableList()
         }
 
-    private lateinit var onInput: (Int) -> Int
-    private lateinit var onOutput: (Int) -> Unit
+    private lateinit var onInput: suspend (Int) -> Int
+    private lateinit var onOutput: suspend (Int) -> Unit
 
-    fun onInput(action: (Int) -> Int) {
+    fun onInput(action: suspend (Int) -> Int) {
         this.onInput = action
     }
 
-    fun onOutput(action: (Int) -> Unit) {
+    fun onOutput(action: suspend (Int) -> Unit) {
         this.onOutput = action
     }
 
@@ -29,7 +31,7 @@ class IntcodeComputer {
         inputPointer = 0
     }
 
-    fun compute() {
+    suspend fun compute() {
         while (true) {
             modifiedInstructionPointer = false
 
@@ -48,11 +50,13 @@ class IntcodeComputer {
         }
     }
 
+    fun computeBlocking() = runBlocking { compute() }
+
     operator fun set(address: Int, value: Int) {
         _memory[address] = value
     }
 
-    private fun Instruction.run() {
+    private suspend fun Instruction.run() {
         return when (this) {
             is Instruction.Halt -> error("Cannot run $this")
             is Instruction.Add -> set(targetAddress, left + right)

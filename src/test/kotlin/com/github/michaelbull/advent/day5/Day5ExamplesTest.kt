@@ -33,7 +33,7 @@ class Day5ExamplesTest {
         computer.onOutput { actual = it }
         computer.memory = program
         computer.reset()
-        computer.compute()
+        computer.computeBlocking()
 
         assertEquals(expected, actual)
     }
