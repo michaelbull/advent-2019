@@ -1,7 +1,5 @@
 package com.github.michaelbull.advent.intcode
 
-import kotlinx.coroutines.runBlocking
-
 class IntcodeComputer {
 
     private var instructionPointer = 0
@@ -46,8 +44,6 @@ class IntcodeComputer {
             }
         }
     }
-
-    fun computeBlocking() = runBlocking { compute() }
 
     operator fun set(address: Int, value: Int) {
         _memory[address] = value

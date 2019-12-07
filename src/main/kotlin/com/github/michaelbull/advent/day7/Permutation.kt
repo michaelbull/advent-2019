@@ -1,27 +1,16 @@
 package com.github.michaelbull.advent.day7
 
-suspend fun IntArray.forEachPermutation(
-    from: Int = 0,
-    to: Int = size,
-    action: suspend (IntArray) -> Unit = {}
+suspend fun <T> List<T>.forEachPermutation(
+    permutation: List<T> = emptyList(),
+    action: suspend (List<T>) -> Unit
 ) {
-    if (from >= to) {
-        action(this)
+    if (isEmpty()) {
+        action(permutation)
     } else {
-        for (i in from until to) {
-            val swap = (from until i).none { this[it] == this[i] }
-
-            if (swap) {
-                swap(from, i)
-                forEachPermutation(from + 1, to, action)
-                swap(from, i)
-            }
+        indices.forEach {
+            val spliced = subList(0, it) + subList(it + 1, size)
+            val merged = permutation + this[it]
+            spliced.forEachPermutation(merged, action)
         }
     }
-}
-
-private fun IntArray.swap(left: Int, right: Int) {
-    val temp = this[left]
-    this[left] = this[right]
-    this[right] = temp
 }

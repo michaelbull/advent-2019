@@ -5,7 +5,7 @@ data class Amplifier(
     val phaseSetting: Int
 )
 
-fun IntArray.toAmplifiers(): List<Amplifier> {
+fun List<Int>.toAmplifiers(): List<Amplifier> {
     return mapIndexed { index, phaseSetting ->
         Amplifier('A' + index, phaseSetting)
     }

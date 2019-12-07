@@ -2,6 +2,7 @@ package com.github.michaelbull.advent.day2
 
 import com.github.michaelbull.advent.intcode.IntcodeComputer
 import com.github.michaelbull.advent.intcode.toIntcode
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,9 +17,9 @@ class Day2ExamplesTest {
 
     @ArgumentsSource(Examples::class)
     @ParameterizedTest(name = "{0} becomes {1}")
-    fun examples(program: String, expected: String) {
+    fun examples(program: String, expected: String) = runBlockingTest {
         computer.memory = program.toIntcode()
-        computer.computeBlocking()
+        computer.compute()
 
         val actual = computer.memory.joinToString(",")
         assertEquals(expected, actual)

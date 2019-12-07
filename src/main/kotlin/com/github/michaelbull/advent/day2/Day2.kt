@@ -3,6 +3,7 @@ package com.github.michaelbull.advent.day2
 import com.github.michaelbull.advent.intcode.Intcode
 import com.github.michaelbull.advent.intcode.IntcodeComputer
 import com.github.michaelbull.advent.intcode.toIntcode
+import kotlinx.coroutines.runBlocking
 
 fun readIntcode(): Intcode {
     return ClassLoader.getSystemResourceAsStream("day2.txt")
@@ -35,21 +36,21 @@ var IntcodeComputer.verb: Int
         set(VERB_ADDRESS, value)
     }
 
-fun IntcodeComputer.part1(program: Intcode): Int {
+suspend fun IntcodeComputer.part1(program: Intcode): Int {
     memory = program
     noun = 12
     verb = 2
-    computeBlocking()
+    compute()
     return output
 }
 
-fun IntcodeComputer.part2(program: Intcode): Int {
+suspend fun IntcodeComputer.part2(program: Intcode): Int {
     for (candidateNoun in NOUN_RANGE) {
         for (candidateVerb in VERB_RANGE) {
             memory = program
             noun = candidateNoun
             verb = candidateVerb
-            computeBlocking()
+            compute()
 
             if (output == 19690720) {
                 return 100 * candidateNoun + candidateVerb
@@ -60,7 +61,7 @@ fun IntcodeComputer.part2(program: Intcode): Int {
     throw IllegalArgumentException("Could not find noun & verb within $program")
 }
 
-fun main() {
+fun main() = runBlocking {
     val program = readIntcode()
     val computer = IntcodeComputer()
     println("part 1 = ${computer.part1(program)}")

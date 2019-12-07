@@ -3,6 +3,7 @@ package com.github.michaelbull.advent.day5
 import com.github.michaelbull.advent.intcode.Intcode
 import com.github.michaelbull.advent.intcode.IntcodeComputer
 import com.github.michaelbull.advent.intcode.toIntcode
+import kotlinx.coroutines.runBlocking
 
 fun readIntcode(): Intcode {
     return ClassLoader.getSystemResourceAsStream("day5.txt")
@@ -11,13 +12,13 @@ fun readIntcode(): Intcode {
         .toIntcode()
 }
 
-fun IntcodeComputer.runTest(program: Intcode, systemId: Int) {
+suspend fun IntcodeComputer.runTest(program: Intcode, systemId: Int) {
     memory = program
     onInput { if (it == 0) systemId else error("No input at $it") }
-    computeBlocking()
+    compute()
 }
 
-fun main() {
+fun main() = runBlocking {
     val program = readIntcode()
     val computer = IntcodeComputer()
 

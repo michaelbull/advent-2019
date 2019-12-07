@@ -1,6 +1,7 @@
 package com.github.michaelbull.advent.day5
 
 import com.github.michaelbull.advent.intcode.IntcodeComputer
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -9,7 +10,7 @@ class Day5AnswersTest {
     private val program = readIntcode()
 
     @Test
-    fun answer1() {
+    fun answer1() = runBlockingTest {
         var diagnosticCode = 0
         val computer = IntcodeComputer()
         computer.onOutput { diagnosticCode = it }
@@ -18,7 +19,7 @@ class Day5AnswersTest {
     }
 
     @Test
-    fun answer2() {
+    fun answer2() = runBlockingTest {
         var diagnosticCode = 0
         val computer = IntcodeComputer()
         computer.onOutput { diagnosticCode = it }

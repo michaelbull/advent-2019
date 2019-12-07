@@ -5,6 +5,7 @@ import com.github.michaelbull.advent.intcode.InstructionReader
 import com.github.michaelbull.advent.intcode.Intcode
 import com.github.michaelbull.advent.intcode.IntcodeComputer
 import com.github.michaelbull.advent.intcode.toIntcode
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -25,14 +26,14 @@ class Day5ExamplesTest {
 
     @ArgumentsSource(Part2Examples::class)
     @ParameterizedTest(name = "{0} with input {1} = {2}")
-    fun part2Examples(program: Intcode, input: Int, expected: Int) {
+    fun part2Examples(program: Intcode, input: Int, expected: Int) = runBlockingTest {
         var actual = 0
 
         val computer = IntcodeComputer()
         computer.onInput { if (it == 0) input else error("No input at $it") }
         computer.onOutput { actual = it }
         computer.memory = program
-        computer.computeBlocking()
+        computer.compute()
 
         assertEquals(expected, actual)
     }
