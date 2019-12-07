@@ -4,6 +4,7 @@ import com.github.michaelbull.advent.intcode.Intcode
 import com.github.michaelbull.advent.intcode.IntcodeComputer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 suspend fun Intcode.part2(): Int {
@@ -16,17 +17,19 @@ suspend fun Intcode.part2(): Int {
 suspend fun Intcode.feedbackLoopThrusterSignal(amplifiers: List<Amplifier>): Int {
     val computers = amplifiers.associateWith { IntcodeComputer() }
 
-    return kotlinx.coroutines.coroutineScope {
+    return coroutineScope {
         for (i in 0 until amplifiers.size - 1) {
             val curr = amplifiers[i]
             val next = amplifiers[i + 1]
-            val channel = computers.channelBetween(curr, next)
+            val channel = Channel<Int>()
+            computers.pair(channel, curr, next)
             addInputs(channel, next)
         }
 
         val first = amplifiers.first()
         val last = amplifiers.last()
-        val feedbackChannel = computers.channelBetween(last, first, capacity = 1)
+        val feedbackChannel = Channel<Int>(capacity = 1)
+        computers.pair(feedbackChannel, last, first)
         addInputs(feedbackChannel, first)
 
         for (computer in computers.values) {
@@ -52,11 +55,11 @@ private fun CoroutineScope.compute(computer: IntcodeComputer, program: Intcode) 
     computer.compute()
 }
 
-private suspend fun Map<Amplifier, IntcodeComputer>.channelBetween(
+private suspend fun Map<Amplifier, IntcodeComputer>.pair(
+    channel: Channel<Int>,
     curr: Amplifier,
-    next: Amplifier,
-    capacity: Int = Channel.RENDEZVOUS
-) = Channel<Int>(capacity).apply {
-    getValue(curr).onOutput { send(it) }
-    getValue(next).onInput { receive() }
+    next: Amplifier
+) {
+    getValue(curr).onOutput { channel.send(it) }
+    getValue(next).onInput { channel.receive() }
 }

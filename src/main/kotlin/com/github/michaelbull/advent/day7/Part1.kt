@@ -19,7 +19,7 @@ suspend fun Intcode.thrusterSignal(amplifiers: List<Amplifier>): Int {
             when (index) {
                 0 -> amplifier.phaseSetting
                 1 -> input
-                else -> kotlin.error("No input at $index")
+                else -> error("No input at $index")
             }
         }
 
