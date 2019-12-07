@@ -89,13 +89,10 @@ suspend fun Intcode.thrusterSignalFeedbackLoop(phaseSettings: IntArray): Int {
         computers.pair(curr, next)
     }
 
-    val firstAmplifier = amplifiers.first()
-    val lastAmplifier = amplifiers.last()
-    val loopChannel = computers.pair(lastAmplifier, firstAmplifier)
-
-    computers.getValue(lastAmplifier).onOutput {
-        loopChannel.send(it)
-    }
+    val loopChannel = computers.pair(
+        curr = amplifiers.last(),
+        next = amplifiers.first()
+    )
 
     coroutineScope {
         for (computer in computers.values) {
