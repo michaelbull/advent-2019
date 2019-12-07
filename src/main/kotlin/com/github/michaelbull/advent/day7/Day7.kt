@@ -110,7 +110,9 @@ private fun CoroutineScope.compute(computer: IntcodeComputer, program: Intcode) 
 }
 
 private suspend fun Map<Amplifier, IntcodeComputer>.pair(curr: Amplifier, next: Amplifier): Channel<Int> {
-    val channel = Channel<Int>(Channel.BUFFERED)
+
+    /* All signals sent or received in this process will be between pairs */
+    val channel = Channel<Int>(capacity = 2)
 
     /* Provide each amplifier its phase setting at its first input instruction */
     channel.send(next.phaseSetting)
