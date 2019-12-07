@@ -32,7 +32,6 @@ class Day5ExamplesTest {
         computer.onInput { if (it == 0) input else error("No input at $it") }
         computer.onOutput { actual = it }
         computer.memory = program
-        computer.reset()
         computer.computeBlocking()
 
         assertEquals(expected, actual)

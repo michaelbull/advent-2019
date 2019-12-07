@@ -70,7 +70,6 @@ fun Intcode.thrusterSignal(phaseSettings: IntArray): Int {
             input = signal
         }
 
-        computer.reset()
         computer.memory = this
         computer.computeBlocking()
     }
@@ -114,7 +113,6 @@ private fun CoroutineScope.addInputs(channel: Channel<Int>, amplifier: Amplifier
 }
 
 private fun CoroutineScope.compute(computer: IntcodeComputer, program: Intcode) = launch {
-    computer.reset()
     computer.memory = program
     computer.compute()
 }

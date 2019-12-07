@@ -14,7 +14,6 @@ fun readIntcode(): Intcode {
 fun IntcodeComputer.runTest(program: Intcode, systemId: Int) {
     memory = program
     onInput { if (it == 0) systemId else error("No input at $it") }
-    reset()
     computeBlocking()
 }
 

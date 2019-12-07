@@ -18,7 +18,6 @@ class Day2ExamplesTest {
     @ParameterizedTest(name = "{0} becomes {1}")
     fun examples(program: String, expected: String) {
         computer.memory = program.toIntcode()
-        computer.reset()
         computer.computeBlocking()
 
         val actual = computer.memory.joinToString(",")

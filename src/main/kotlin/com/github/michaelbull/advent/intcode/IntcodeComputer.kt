@@ -26,12 +26,9 @@ class IntcodeComputer {
         this.onOutput = action
     }
 
-    fun reset() {
-        instructionPointer = 0
-        inputPointer = 0
-    }
-
     suspend fun compute() {
+        reset()
+
         while (true) {
             modifiedInstructionPointer = false
 
@@ -54,6 +51,11 @@ class IntcodeComputer {
 
     operator fun set(address: Int, value: Int) {
         _memory[address] = value
+    }
+
+    private fun reset() {
+        instructionPointer = 0
+        inputPointer = 0
     }
 
     private suspend fun Instruction.run() {
