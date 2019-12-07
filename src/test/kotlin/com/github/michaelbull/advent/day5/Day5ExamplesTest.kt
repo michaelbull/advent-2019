@@ -26,12 +26,15 @@ class Day5ExamplesTest {
     @ArgumentsSource(Part2Examples::class)
     @ParameterizedTest(name = "{0} with input {1} = {2}")
     fun part2Examples(program: Intcode, input: Int, expected: Int) {
+        var actual = 0
+
         val computer = IntcodeComputer()
-        computer.inputs = listOf(input)
+        computer.onInput { if (it == 0) input else error("No input at $it") }
+        computer.onOutput { actual = it }
         computer.memory = program
+        computer.reset()
         computer.compute()
 
-        val actual = computer.outputs.first().toInt()
         assertEquals(expected, actual)
     }
 

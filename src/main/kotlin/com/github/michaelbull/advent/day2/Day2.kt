@@ -39,6 +39,7 @@ fun IntcodeComputer.part1(program: Intcode): Int {
     memory = program
     noun = 12
     verb = 2
+    reset()
     compute()
     return output
 }
@@ -49,6 +50,7 @@ fun IntcodeComputer.part2(program: Intcode): Int {
             memory = program
             noun = candidateNoun
             verb = candidateVerb
+            reset()
             compute()
 
             if (output == 19690720) {
