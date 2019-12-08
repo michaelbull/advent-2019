@@ -19,20 +19,10 @@ data class Layer(
     }
 
     fun prettyPrint(): String {
-        val builder = StringBuilder()
-
-        for (rowIndex in rows.indices) {
-            val row = rows[rowIndex]
-
-            for (pixel in row) {
-                builder.append(pixel.toColor().toChar())
-            }
-
-            if (rowIndex != rows.size - 1) {
-                builder.append("\n")
+        return rows.joinToString(separator = "\n") { columns ->
+            columns.joinToString(separator = "") { pixel ->
+                pixel.toColor().toChar().toString()
             }
         }
-
-        return builder.toString()
     }
 }
