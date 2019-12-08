@@ -18,13 +18,21 @@ data class Layer(
         return rows[y][x]
     }
 
-    fun prettyPrint() {
-        for (row in rows) {
+    fun prettyPrint(): String {
+        val builder = StringBuilder()
+
+        for (rowIndex in rows.indices) {
+            val row = rows[rowIndex]
+
             for (pixel in row) {
-                print(pixel.toColor().toChar())
+                builder.append(pixel.toColor().toChar())
             }
 
-            println()
+            if (rowIndex != rows.size - 1) {
+                builder.append("\n")
+            }
         }
+
+        return builder.toString()
     }
 }

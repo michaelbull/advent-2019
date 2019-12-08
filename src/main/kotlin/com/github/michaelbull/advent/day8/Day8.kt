@@ -19,7 +19,7 @@ fun Image.part1(): Int {
     return oneDigits * twoDigits
 }
 
-fun Image.part2() {
+fun Image.part2(): String {
     return decode().prettyPrint()
 }
 
@@ -68,5 +68,5 @@ fun Image.decode(): Layer {
 fun main() {
     val image = readImage()
     println("part 1 = ${image.part1()}")
-    image.part2()
+    println("part 2 =\n${image.part2()}")
 }
