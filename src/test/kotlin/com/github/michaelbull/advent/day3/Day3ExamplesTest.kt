@@ -13,7 +13,7 @@ class Day3ExamplesTest {
     @ArgumentsSource(Part1GridExamples::class)
     @ParameterizedTest(name = "{0}")
     fun part1GridExamples(paths: List<String>, expected: String) {
-        val centre = Position(1,1)
+        val centre = Position(1, 1)
         val grid = Grid(centre)
         paths.toWires().forEach(grid::plot)
 
