@@ -11,7 +11,7 @@ class Day5AnswersTest {
 
     @Test
     fun answer1() = runBlockingTest {
-        var diagnosticCode = 0
+        var diagnosticCode = 0L
         val computer = IntcodeComputer()
         computer.onOutput { diagnosticCode = it }
         computer.runTest(program, systemId = 1)
@@ -20,7 +20,7 @@ class Day5AnswersTest {
 
     @Test
     fun answer2() = runBlockingTest {
-        var diagnosticCode = 0
+        var diagnosticCode = 0L
         val computer = IntcodeComputer()
         computer.onOutput { diagnosticCode = it }
         computer.runTest(program, systemId = 5)

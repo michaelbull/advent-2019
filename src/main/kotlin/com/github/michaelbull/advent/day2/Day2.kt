@@ -12,31 +12,31 @@ fun readIntcode(): Intcode {
         .toIntcode()
 }
 
-private val NOUN_RANGE = 0..99
-private val VERB_RANGE = 0..99
+private val NOUN_RANGE = 0L..99L
+private val VERB_RANGE = 0L..99L
 
-private const val OUTPUT_ADDRESS = 0
-private const val NOUN_ADDRESS = 1
-private const val VERB_ADDRESS = 2
+private const val OUTPUT_ADDRESS = 0L
+private const val NOUN_ADDRESS = 1L
+private const val VERB_ADDRESS = 2L
 
-val IntcodeComputer.output: Int
-    get() = memory[OUTPUT_ADDRESS]
+val IntcodeComputer.output: Long
+    get() = memory.getValue(OUTPUT_ADDRESS)
 
-var IntcodeComputer.noun: Int
-    get() = memory[NOUN_ADDRESS]
+var IntcodeComputer.noun: Long
+    get() = memory.getValue(NOUN_ADDRESS)
     set(value) {
         require(value in NOUN_RANGE) { "noun must be in range [$NOUN_RANGE], but was $value" }
         set(NOUN_ADDRESS, value)
     }
 
-var IntcodeComputer.verb: Int
-    get() = memory[VERB_ADDRESS]
+var IntcodeComputer.verb: Long
+    get() = memory.getValue(VERB_ADDRESS)
     set(value) {
         require(value in VERB_RANGE) { "verb must be in range [$VERB_RANGE], but was $value" }
         set(VERB_ADDRESS, value)
     }
 
-suspend fun IntcodeComputer.part1(program: Intcode): Int {
+suspend fun IntcodeComputer.part1(program: Intcode): Long {
     memory = program
     noun = 12
     verb = 2
@@ -44,7 +44,7 @@ suspend fun IntcodeComputer.part1(program: Intcode): Int {
     return output
 }
 
-suspend fun IntcodeComputer.part2(program: Intcode): Int {
+suspend fun IntcodeComputer.part2(program: Intcode): Long {
     for (candidateNoun in NOUN_RANGE) {
         for (candidateVerb in VERB_RANGE) {
             memory = program
@@ -52,7 +52,7 @@ suspend fun IntcodeComputer.part2(program: Intcode): Int {
             verb = candidateVerb
             compute()
 
-            if (output == 19690720) {
+            if (output == 19690720L) {
                 return 100 * candidateNoun + candidateVerb
             }
         }

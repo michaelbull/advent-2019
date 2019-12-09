@@ -12,7 +12,7 @@ fun readIntcode(): Intcode {
         .toIntcode()
 }
 
-suspend fun IntcodeComputer.runTest(program: Intcode, systemId: Int) {
+suspend fun IntcodeComputer.runTest(program: Intcode, systemId: Long) {
     memory = program
     onInput { if (it == 0) systemId else error("No input at $it") }
     compute()
@@ -22,7 +22,7 @@ fun main() = runBlocking {
     val program = readIntcode()
     val computer = IntcodeComputer()
 
-    var diagnosticCode = 0
+    var diagnosticCode = 0L
     computer.onOutput { diagnosticCode = it }
 
     computer.runTest(program, systemId = 1)

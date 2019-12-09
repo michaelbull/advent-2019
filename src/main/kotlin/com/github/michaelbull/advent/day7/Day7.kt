@@ -13,20 +13,20 @@ fun readSoftware(): Intcode {
 
 suspend fun Intcode.highestThrusterSignal(
     phaseSettings: IntRange,
-    getSignal: suspend Intcode.(List<Amplifier>) -> Int
-): Int {
-    var highest = -1
+    getSignal: suspend Intcode.(List<Amplifier>) -> Long
+): Long {
+    var highest = -1L
 
     phaseSettings.toList().forEachPermutation { permutation ->
         val amplifiers = permutation.toAmplifiers()
         val signal = getSignal(amplifiers)
 
-        if (highest == -1 || signal > highest) {
+        if (highest == -1L || signal > highest) {
             highest = signal
         }
     }
 
-    if (highest == -1) {
+    if (highest == -1L) {
         throw IllegalArgumentException("No output signal found")
     } else {
         return highest

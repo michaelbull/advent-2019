@@ -7,44 +7,44 @@ sealed class Instruction(val parameters: Int = 0) {
     }
 
     data class Add(
-        val left: Int,
-        val right: Int,
-        val targetAddress: Int
+        val left: Long,
+        val right: Long,
+        val targetAddress: Long
     ) : Instruction(parameters = 3)
 
     data class Multiply(
-        val left: Int,
-        val right: Int,
-        val targetAddress: Int
+        val left: Long,
+        val right: Long,
+        val targetAddress: Long
     ) : Instruction(parameters = 3)
 
     data class Input(
-        val targetAddress: Int
+        val targetAddress: Long
     ) : Instruction(parameters = 1)
 
     data class Output(
-        val value: Int
+        val value: Long
     ) : Instruction(parameters = 1)
 
     data class JumpIfTrue(
-        val value: Int,
-        val pointer: Int
+        val value: Long,
+        val pointer: Long
     ) : Instruction(parameters = 2)
 
     data class JumpIfFalse(
-        val value: Int,
-        val pointer: Int
+        val value: Long,
+        val pointer: Long
     ) : Instruction(parameters = 2)
 
     data class LessThan(
-        val left: Int,
-        val right: Int,
-        val targetAddress: Int
+        val left: Long,
+        val right: Long,
+        val targetAddress: Long
     ) : Instruction(parameters = 3)
 
     data class Equals(
-        val left: Int,
-        val right: Int,
-        val targetAddress: Int
+        val left: Long,
+        val right: Long,
+        val targetAddress: Long
     ) : Instruction(parameters = 3)
 }

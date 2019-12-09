@@ -21,7 +21,7 @@ class Day2ExamplesTest {
         computer.memory = program.toIntcode()
         computer.compute()
 
-        val actual = computer.memory.joinToString(",")
+        val actual = computer.memory.entries.joinToString(",") { it.value.toString() }
         assertEquals(expected, actual)
     }
 

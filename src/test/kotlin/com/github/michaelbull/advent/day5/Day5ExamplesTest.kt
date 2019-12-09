@@ -26,8 +26,8 @@ class Day5ExamplesTest {
 
     @ArgumentsSource(Part2Examples::class)
     @ParameterizedTest(name = "{0} with input {1} = {2}")
-    fun part2Examples(program: Intcode, input: Int, expected: Int) = runBlockingTest {
-        var actual = 0
+    fun part2Examples(program: Intcode, input: Long, expected: Long) = runBlockingTest {
+        var actual = 0L
 
         val computer = IntcodeComputer()
         computer.onInput { if (it == 0) input else error("No input at $it") }
@@ -47,8 +47,8 @@ class Day5ExamplesTest {
 
     private data class Part2Arguments(
         val program: String,
-        val input: Int,
-        val output: Int
+        val input: Long,
+        val output: Long
     ) : Arguments {
         override fun get() = arrayOf(program.toIntcode(), input, output)
     }

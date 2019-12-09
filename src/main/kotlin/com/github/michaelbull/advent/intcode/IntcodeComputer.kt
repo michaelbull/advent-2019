@@ -2,25 +2,25 @@ package com.github.michaelbull.advent.intcode
 
 class IntcodeComputer {
 
-    private var instructionPointer = 0
+    private var instructionPointer = 0L
     private var inputPointer = 0
     private var modifiedInstructionPointer = false
-    private var _memory = mutableListOf<Int>()
+    private var _memory = mutableMapOf<Long, Long>().withDefault { 0 }
 
-    var memory: Intcode
-        get() = _memory.toList()
+    var memory: Map<Long, Long>
+        get() = _memory
         set(value) {
-            _memory = value.toMutableList()
+            _memory = value.toMutableMap().withDefault { 0 }
         }
 
-    private lateinit var onInput: suspend (Int) -> Int
-    private lateinit var onOutput: suspend (Int) -> Unit
+    private lateinit var onInput: suspend (Int) -> Long
+    private lateinit var onOutput: suspend (Long) -> Unit
 
-    fun onInput(action: suspend (Int) -> Int) {
+    fun onInput(action: suspend (Int) -> Long) {
         this.onInput = action
     }
 
-    fun onOutput(action: suspend (Int) -> Unit) {
+    fun onOutput(action: suspend (Long) -> Unit) {
         this.onOutput = action
     }
 
@@ -45,7 +45,7 @@ class IntcodeComputer {
         }
     }
 
-    operator fun set(address: Int, value: Int) {
+    operator fun set(address: Long, value: Long) {
         _memory[address] = value
     }
 
@@ -61,18 +61,18 @@ class IntcodeComputer {
             is Instruction.Multiply -> set(targetAddress, left * right)
             is Instruction.Input -> set(targetAddress, onInput(inputPointer++))
             is Instruction.Output -> onOutput(value)
-            is Instruction.JumpIfTrue -> jumpIf(pointer) { value != 0 }
-            is Instruction.JumpIfFalse -> jumpIf(pointer) { value == 0 }
+            is Instruction.JumpIfTrue -> jumpIf(pointer) { value != 0L }
+            is Instruction.JumpIfFalse -> jumpIf(pointer) { value == 0L }
             is Instruction.LessThan -> setIf(targetAddress) { left < right }
             is Instruction.Equals -> setIf(targetAddress) { left == right }
         }
     }
 
-    private inline fun setIf(address: Int, predicate: () -> Boolean) {
+    private inline fun setIf(address: Long, predicate: () -> Boolean) {
         set(address, if (predicate()) 1 else 0)
     }
 
-    private inline fun jumpIf(pointer: Int, predicate: () -> Boolean) {
+    private inline fun jumpIf(pointer: Long, predicate: () -> Boolean) {
         if (predicate()) {
             instructionPointer = pointer
             modifiedInstructionPointer = true

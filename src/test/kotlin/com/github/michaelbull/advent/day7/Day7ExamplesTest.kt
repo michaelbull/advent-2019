@@ -15,14 +15,14 @@ class Day7ExamplesTest {
 
     @ArgumentsSource(Part1Examples::class)
     @ParameterizedTest(name = "max thruster signal {2} (from phase setting sequence {1}): {0}")
-    fun part1Examples(program: Intcode, phaseSettings: List<Int>, expectedSignal: Int) = runBlockingTest {
+    fun part1Examples(program: Intcode, phaseSettings: List<Int>, expectedSignal: Long) = runBlockingTest {
         val actualSignal = program.thrusterSignal(phaseSettings.toAmplifiers())
         assertEquals(expectedSignal, actualSignal)
     }
 
     @ArgumentsSource(Part2Examples::class)
     @ParameterizedTest(name = "max thruster signal with feedback loop {2} (from phase setting sequence {1}): {0}")
-    fun part2Examples(program: Intcode, phaseSettings: List<Int>, expectedSignal: Int) = runBlockingTest {
+    fun part2Examples(program: Intcode, phaseSettings: List<Int>, expectedSignal: Long) = runBlockingTest {
         val actualSignal = program.feedbackLoopThrusterSignal(phaseSettings.toAmplifiers())
         assertEquals(expectedSignal, actualSignal)
     }
@@ -30,7 +30,7 @@ class Day7ExamplesTest {
     private data class ExampleArguments(
         val program: String,
         val phaseSettings: List<Int>,
-        val expectedSignal: Int
+        val expectedSignal: Long
     ) : Arguments {
         override fun get() = arrayOf(program.toIntcode(), phaseSettings, expectedSignal)
     }

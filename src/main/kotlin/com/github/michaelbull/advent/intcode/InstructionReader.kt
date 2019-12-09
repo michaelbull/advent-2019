@@ -84,17 +84,17 @@ class InstructionReader(
             ?: ParameterMode.Position
     }
 
-    private fun Intcode.parameter(number: Int): Int {
+    private fun Intcode.parameter(number: Int): Long {
         val address = instructionPointer + number
 
         return when (parameterMode(number)) {
-            ParameterMode.Position -> this[this[address]]
-            ParameterMode.Immediate -> this[address]
+            ParameterMode.Position -> getValue(getValue(address))
+            ParameterMode.Immediate -> getValue(address)
         }
     }
 
-    private fun Intcode.address(number: Int): Int {
-        return this[instructionPointer + number]
+    private fun Intcode.address(number: Int): Long {
+        return getValue(instructionPointer + number)
     }
 
     private companion object {
