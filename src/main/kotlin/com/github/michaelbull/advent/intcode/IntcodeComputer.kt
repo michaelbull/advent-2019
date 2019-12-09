@@ -3,6 +3,7 @@ package com.github.michaelbull.advent.intcode
 class IntcodeComputer {
 
     private var instructionPointer = 0L
+    private var relativeBase = 0L
     private var inputPointer = 0
     private var modifiedInstructionPointer = false
     private var _memory = mutableMapOf<Long, Long>().withDefault { 0 }
@@ -30,7 +31,7 @@ class IntcodeComputer {
         while (true) {
             modifiedInstructionPointer = false
 
-            val reader = InstructionReader(_memory, instructionPointer)
+            val reader = InstructionReader(_memory, instructionPointer, relativeBase)
             val instruction = reader.read()
 
             if (instruction == Instruction.Halt) {
@@ -65,6 +66,7 @@ class IntcodeComputer {
             is Instruction.JumpIfFalse -> jumpIf(pointer) { value == 0L }
             is Instruction.LessThan -> setIf(targetAddress) { left < right }
             is Instruction.Equals -> setIf(targetAddress) { left == right }
+            is Instruction.RelativeBaseOffset -> relativeBase += offset
         }
     }
 

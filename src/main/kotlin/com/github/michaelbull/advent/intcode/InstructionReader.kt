@@ -4,7 +4,8 @@ import kotlin.math.max
 
 class InstructionReader(
     private val memory: Intcode,
-    private val instructionPointer: Int = 0
+    private val instructionPointer: Long = 0,
+    private val relativeBase: Long = 0
 ) {
 
     private lateinit var modes: String
@@ -19,45 +20,49 @@ class InstructionReader(
             Opcode.Halt -> Instruction.Halt
 
             Opcode.Add -> Instruction.Add(
-                left = memory.parameter(1),
-                right = memory.parameter(2),
-                targetAddress = memory.address(3)
+                left = memory.parameterValue(1),
+                right = memory.parameterValue(2),
+                targetAddress = memory.parameter(3)
             )
 
             Opcode.Multiply -> Instruction.Multiply(
-                left = memory.parameter(1),
-                right = memory.parameter(2),
-                targetAddress = memory.address(3)
+                left = memory.parameterValue(1),
+                right = memory.parameterValue(2),
+                targetAddress = memory.parameter(3)
             )
 
             Opcode.Input -> Instruction.Input(
-                targetAddress = memory.address(1)
+                targetAddress = memory.parameter(1)
             )
 
             Opcode.Output -> Instruction.Output(
-                value = memory.parameter(1)
+                value = memory.parameterValue(1)
             )
 
             Opcode.JumpIfTrue -> Instruction.JumpIfTrue(
-                value = memory.parameter(1),
-                pointer = memory.parameter(2)
+                value = memory.parameterValue(1),
+                pointer = memory.parameterValue(2)
             )
 
             Opcode.JumpIfFalse -> Instruction.JumpIfFalse(
-                value = memory.parameter(1),
-                pointer = memory.parameter(2)
+                value = memory.parameterValue(1),
+                pointer = memory.parameterValue(2)
             )
 
             Opcode.LessThan -> Instruction.LessThan(
-                left = memory.parameter(1),
-                right = memory.parameter(2),
-                targetAddress = memory.address(3)
+                left = memory.parameterValue(1),
+                right = memory.parameterValue(2),
+                targetAddress = memory.parameter(3)
             )
 
             Opcode.Equals -> Instruction.Equals(
-                left = memory.parameter(1),
-                right = memory.parameter(2),
-                targetAddress = memory.address(3)
+                left = memory.parameterValue(1),
+                right = memory.parameterValue(2),
+                targetAddress = memory.parameter(3)
+            )
+
+            Opcode.RelativeBaseOffset -> Instruction.RelativeBaseOffset(
+                offset = memory.parameterValue(1)
             )
         }
     }
@@ -72,6 +77,7 @@ class InstructionReader(
             6 -> Opcode.JumpIfFalse
             7 -> Opcode.LessThan
             8 -> Opcode.Equals
+            9 -> Opcode.RelativeBaseOffset
             99 -> Opcode.Halt
             else -> error("Unknown opcode $this")
         }
@@ -84,17 +90,18 @@ class InstructionReader(
             ?: ParameterMode.Position
     }
 
+    private fun Intcode.parameterValue(number: Int): Long {
+        return getValue(parameter(number))
+    }
+
     private fun Intcode.parameter(number: Int): Long {
         val address = instructionPointer + number
 
         return when (parameterMode(number)) {
-            ParameterMode.Position -> getValue(getValue(address))
-            ParameterMode.Immediate -> getValue(address)
+            ParameterMode.Position -> getValue(address)
+            ParameterMode.Immediate -> address
+            ParameterMode.Relative -> relativeBase + getValue(address)
         }
-    }
-
-    private fun Intcode.address(number: Int): Long {
-        return getValue(instructionPointer + number)
     }
 
     private companion object {

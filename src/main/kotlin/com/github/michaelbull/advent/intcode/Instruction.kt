@@ -47,4 +47,8 @@ sealed class Instruction(val parameters: Int = 0) {
         val right: Long,
         val targetAddress: Long
     ) : Instruction(parameters = 3)
+
+    data class RelativeBaseOffset(
+        val offset: Long
+    ) : Instruction(parameters = 1)
 }

@@ -10,4 +10,5 @@ sealed class Opcode {
     object JumpIfFalse : Opcode()
     object LessThan : Opcode()
     object Equals : Opcode()
+    object RelativeBaseOffset : Opcode()
 }
