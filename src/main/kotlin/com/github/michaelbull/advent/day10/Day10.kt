@@ -10,10 +10,17 @@ fun readAsteroidMap(): AsteroidMap {
 fun AsteroidMap.part1(): Pair<Position, Int>? {
     return asteroids
         .map { from -> from to detectableAsteroids(from) }
-        .maxBy { it.second }
+        .maxBy { (_, asteroids) -> asteroids }
+}
+
+fun AsteroidMap.part2(station: Position): Int {
+    val asteroid = vaporizeFrom(station, count = 200)
+    return asteroid.x * 100 + asteroid.y
 }
 
 fun main() {
     val map = readAsteroidMap()
-    println("part 1 = ${map.part1()}")
+    val (station, detectableAsteroids) = map.part1()!!
+    println("part 1 = $detectableAsteroids")
+    println("part 2 = ${map.part2(station)}")
 }

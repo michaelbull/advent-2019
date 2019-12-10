@@ -1,6 +1,6 @@
 package com.github.michaelbull.advent.day10
 
-import kotlin.math.atan2
+import kotlin.math.PI
 
 data class AsteroidMap(
     val asteroids: List<Position>
@@ -13,14 +13,38 @@ data class AsteroidMap(
     fun detectableAsteroids(from: Position): Int {
         return asteroids
             .filter { to -> to != from }
-            .map { to -> angle(from, to) }
+            .map(from::atan2)
             .distinct()
             .size
     }
 
-    private fun angle(from: Position, to: Position): Double {
-        val (deltaX, deltaY) = to - from
-        return atan2(deltaY.toDouble(), deltaX.toDouble())
+    fun vaporizeFrom(station: Position, count: Int): Position {
+        val remaining = asteroids.filter { it != station }.toMutableList()
+        val angleComparator = compareBy(Map.Entry<Double, List<Position>>::key)
+
+        var currentAngle = -PI / 2
+        var moved = false
+        lateinit var lastVaporized: Position
+
+        repeat(count) {
+            val asteroidsByAngle = remaining.groupBy(station::atan2)
+
+            val (nextAngle, asteroidsOnLine) = asteroidsByAngle
+                .filter { (angle, _) -> if (moved) angle > currentAngle else angle >= currentAngle }
+                .minWith(angleComparator)
+                ?: asteroidsByAngle.minWith(angleComparator)!!
+
+            currentAngle = nextAngle
+            moved = true
+
+            val firstAsteroidOnLine = asteroidsOnLine.minBy(station::hypot)
+            if (firstAsteroidOnLine != null) {
+                remaining.remove(firstAsteroidOnLine)
+                lastVaporized = firstAsteroidOnLine
+            }
+        }
+
+        return lastVaporized
     }
 }
 
