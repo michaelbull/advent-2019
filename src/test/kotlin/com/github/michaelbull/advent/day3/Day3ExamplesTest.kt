@@ -1,5 +1,6 @@
 package com.github.michaelbull.advent.day3
 
+import com.github.michaelbull.advent.Position
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest

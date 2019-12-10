@@ -1,5 +1,6 @@
 package com.github.michaelbull.advent.day3
 
+import com.github.michaelbull.advent.Position
 import kotlin.math.abs
 
 class Grid(val centralPort: Position = Position.ZERO) : Iterable<Map.Entry<Position, Cell>> {

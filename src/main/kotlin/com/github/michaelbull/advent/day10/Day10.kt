@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent.day10
 
+import com.github.michaelbull.advent.Position
+
 fun readAsteroidMap(): AsteroidMap {
     return ClassLoader.getSystemResourceAsStream("day10.txt")
         .bufferedReader()

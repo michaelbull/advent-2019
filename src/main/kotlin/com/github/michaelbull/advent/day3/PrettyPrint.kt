@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent.day3
 
+import com.github.michaelbull.advent.Position
+
 fun Grid.prettyPrint(width: Int, height: Int): String {
     val builder = StringBuilder()
 

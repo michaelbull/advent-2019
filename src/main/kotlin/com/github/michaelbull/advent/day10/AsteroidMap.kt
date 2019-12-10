@@ -1,5 +1,6 @@
 package com.github.michaelbull.advent.day10
 
+import com.github.michaelbull.advent.Position
 import kotlin.math.PI
 
 data class AsteroidMap(

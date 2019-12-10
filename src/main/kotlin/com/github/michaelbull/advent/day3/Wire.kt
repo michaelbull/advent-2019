@@ -1,5 +1,7 @@
 package com.github.michaelbull.advent.day3
 
+import com.github.michaelbull.advent.Position
+
 data class Wire(
     val id: Int,
     val path: List<Step>
