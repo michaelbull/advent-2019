@@ -14,7 +14,7 @@ fun List<String>.toWires(): List<Wire> {
 fun Grid.part1(): Int? {
     return asSequence()
         .filter { it.value is Cell.Intersection }
-        .map { distanceToCentre(it.key) }
+        .map { it.key distanceTo centralPort }
         .min()
 }
 

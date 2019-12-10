@@ -1,5 +1,6 @@
 package com.github.michaelbull.advent
 
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot
 
@@ -25,6 +26,12 @@ data class Position(
         val deltaX = other.x - this.x
         val deltaY = other.y - this.y
         return hypot(deltaX.toDouble(), deltaY.toDouble())
+    }
+
+    infix fun distanceTo(other: Position): Int {
+        val deltaX = x - other.x
+        val deltaY = y - other.y
+        return abs(deltaX) + abs(deltaY)
     }
 
     override fun toString(): String {

@@ -1,7 +1,6 @@
 package com.github.michaelbull.advent.day3
 
 import com.github.michaelbull.advent.Position
-import kotlin.math.abs
 
 class Grid(val centralPort: Position = Position.ZERO) : Iterable<Map.Entry<Position, Cell>> {
 
@@ -63,12 +62,6 @@ class Grid(val centralPort: Position = Position.ZERO) : Iterable<Map.Entry<Posit
                 }
             }
         }
-    }
-
-    fun distanceToCentre(from: Position): Int {
-        val deltaX = from.x - centralPort.x
-        val deltaY = from.y - centralPort.y
-        return abs(deltaX) + abs(deltaY)
     }
 
     private fun Wire.plotHorizontally(xRange: Iterable<Int>, y: Int) {
