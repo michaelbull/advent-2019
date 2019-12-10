@@ -1,8 +1,7 @@
 package com.github.michaelbull.advent
 
+import com.github.michaelbull.advent.day10.greatestCommonDivisor
 import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.hypot
 
 data class Position(
     val x: Int,
@@ -16,22 +15,39 @@ data class Position(
         )
     }
 
-    fun atan2(other: Position): Double {
-        val deltaX = other.x - this.x
-        val deltaY = other.y - this.y
-        return atan2(deltaY.toDouble(), deltaX.toDouble())
+    operator fun plus(other: Position): Position {
+        return copy(
+            x = this.x + other.x,
+            y = this.y + other.y
+        )
     }
 
-    fun hypot(other: Position): Double {
-        val deltaX = other.x - this.x
-        val deltaY = other.y - this.y
-        return hypot(deltaX.toDouble(), deltaY.toDouble())
+    operator fun minus(other: Position): Position {
+        return copy(
+            x = this.x - other.x,
+            y = this.y - other.y
+        )
+    }
+
+    operator fun div(divisor: Int): Position {
+        return copy(
+            x = this.x / divisor,
+            y = this.y / divisor
+        )
+    }
+
+    fun simplify(): Position {
+        return this / greatestCommonDivisor(x, y)
     }
 
     infix fun distanceTo(other: Position): Int {
         val deltaX = x - other.x
         val deltaY = y - other.y
         return abs(deltaX) + abs(deltaY)
+    }
+
+    infix fun cross(other: Position): Long {
+        return x.toLong() * other.y - y.toLong() * other.x
     }
 
     override fun toString(): String {

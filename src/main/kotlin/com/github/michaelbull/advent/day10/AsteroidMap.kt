@@ -1,51 +1,44 @@
 package com.github.michaelbull.advent.day10
 
 import com.github.michaelbull.advent.Position
-import kotlin.math.PI
+import java.util.ArrayDeque
 
 data class AsteroidMap(
     val asteroids: List<Position>
 ) {
 
-    operator fun contains(position: Position): Boolean {
-        return position in asteroids
-    }
-
-    fun detectableAsteroids(from: Position): Int {
+    fun detectableAsteroids(from: Position): List<Position> {
         return asteroids
             .filter { to -> to != from }
-            .map(from::atan2)
+            .map { to -> (to - from).simplify() }
             .distinct()
-            .size
     }
 
-    fun vaporizeFrom(station: Position, count: Int): Position {
-        val remaining = asteroids.filter { it != station }.toMutableList()
-        val angleComparator = compareBy(Map.Entry<Double, List<Position>>::key)
+    fun vaporize(from: Position) = sequence {
+        val lineIterators = lines(from).map(List<Position>::iterator)
+        val queue = ArrayDeque(lineIterators)
 
-        var currentAngle = -PI / 2
-        var moved = false
-        lateinit var lastVaporized: Position
+        while (queue.isNotEmpty()) {
+            val lineIterator = queue.removeFirst()
 
-        repeat(count) {
-            val asteroidsByAngle = remaining.groupBy(station::atan2)
+            val vaporized = lineIterator.next()
+            yield(vaporized)
 
-            val (nextAngle, asteroidsOnLine) = asteroidsByAngle
-                .filter { (angle, _) -> if (moved) angle > currentAngle else angle >= currentAngle }
-                .minWith(angleComparator)
-                ?: asteroidsByAngle.minWith(angleComparator)!!
-
-            currentAngle = nextAngle
-            moved = true
-
-            val firstAsteroidOnLine = asteroidsOnLine.minBy(station::hypot)
-            if (firstAsteroidOnLine != null) {
-                remaining.remove(firstAsteroidOnLine)
-                lastVaporized = firstAsteroidOnLine
+            if (lineIterator.hasNext()) {
+                queue.addLast(lineIterator)
             }
         }
+    }
 
-        return lastVaporized
+    private fun lines(from: Position): Collection<List<Position>> {
+        val linesBySimplifiedDelta = asteroids.asSequence()
+            .filter { to -> to != from }
+            .groupBy { to -> (to - from).simplify() }
+
+        return linesBySimplifiedDelta
+            .mapValues { (_, line) -> line.sortedBy(from::distanceTo) }
+            .toSortedMap(AngleComparator)
+            .values
     }
 }
 

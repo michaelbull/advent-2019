@@ -11,12 +11,12 @@ fun readAsteroidMap(): AsteroidMap {
 
 fun AsteroidMap.part1(): Pair<Position, Int>? {
     return asteroids
-        .map { from -> from to detectableAsteroids(from) }
+        .map { from -> from to detectableAsteroids(from).size }
         .maxBy { (_, asteroids) -> asteroids }
 }
 
 fun AsteroidMap.part2(station: Position): Int {
-    val asteroid = vaporizeFrom(station, count = 200)
+    val asteroid = vaporize(from = station).elementAt(199)
     return asteroid.x * 100 + asteroid.y
 }
 
