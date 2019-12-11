@@ -11,7 +11,7 @@ fun readAsteroidMap(): AsteroidMap {
 
 fun AsteroidMap.part1(): Pair<Position, Int>? {
     return asteroids
-        .map { from -> from to detectableAsteroids(from).size }
+        .map { from -> from to detectableAsteroids(from) }
         .maxBy { (_, asteroids) -> asteroids }
 }
 

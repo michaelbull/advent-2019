@@ -2,16 +2,18 @@ package com.github.michaelbull.advent.day10
 
 import com.github.michaelbull.advent.Position
 import java.util.ArrayDeque
+import java.util.SortedMap
 
 data class AsteroidMap(
     val asteroids: List<Position>
 ) {
 
-    fun detectableAsteroids(from: Position): List<Position> {
+    fun detectableAsteroids(from: Position): Int {
         return asteroids
             .filter { to -> to != from }
             .map { to -> (to - from).simplify() }
             .distinct()
+            .size
     }
 
     fun vaporize(from: Position) = sequence {
@@ -30,15 +32,23 @@ data class AsteroidMap(
         }
     }
 
+    private operator fun Position.minus(other: Position): Tangent {
+        val adjacent = this.x - other.x
+        val opposite = this.y - other.y
+        return Tangent(adjacent, opposite)
+    }
+
     private fun lines(from: Position): Collection<List<Position>> {
-        val linesBySimplifiedDelta = asteroids.asSequence()
+        return asteroidsByTangent(from)
+            .values
+            .map { it.sortedBy(from::distanceTo) }
+    }
+
+    private fun asteroidsByTangent(from: Position): SortedMap<Tangent, List<Position>> {
+        return asteroids.asSequence()
             .filter { to -> to != from }
             .groupBy { to -> (to - from).simplify() }
-
-        return linesBySimplifiedDelta
-            .mapValues { (_, line) -> line.sortedBy(from::distanceTo) }
-            .toSortedMap(AngleComparator)
-            .values
+            .toSortedMap(TangentComparator)
     }
 }
 
