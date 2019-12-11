@@ -9,10 +9,10 @@ data class Tangent(
 
     val quadrant: Quadrant
         get() = when {
-            adjacent >= 0 && opposite >= 0 -> Quadrant.I
-            adjacent < 0 && opposite >= 0 -> Quadrant.II
-            adjacent < 0 && opposite < 0 -> Quadrant.III
-            adjacent >= 0 && opposite < 0 -> Quadrant.IV
+            adjacent >= 0 && opposite < 0 -> Quadrant.I
+            adjacent < 0 && opposite < 0 -> Quadrant.II
+            adjacent < 0 && opposite >= 0 -> Quadrant.III
+            adjacent >= 0 && opposite >= 0 -> Quadrant.IV
             else -> error("$this is not in a quadrant")
         }
 

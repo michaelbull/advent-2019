@@ -1,24 +1,29 @@
 package com.github.michaelbull.advent.day10
 
-import kotlin.math.sign
-
 /* https://www.reddit.com/r/adventofcode/comments/e8r1jx/day_10_part_2_discrete_anglecomparing_function_ie/ */
 object TangentComparator : Comparator<Tangent> {
 
-    private val leftQuadrants = setOf(Quadrant.II, Quadrant.III)
+    private val clockwiseQuadrants = listOf(
+        Quadrant.I,
+        Quadrant.IV,
+        Quadrant.III,
+        Quadrant.II
+    )
 
-    private infix fun Tangent.cross(other: Tangent): Long {
-        return (adjacent.toLong() * other.opposite) - (opposite.toLong() * other.adjacent)
+    private fun Quadrant.toInt(): Int {
+        return clockwiseQuadrants.indexOf(this)
     }
 
     override fun compare(a: Tangent, b: Tangent): Int {
-        val aLeft = a.quadrant in leftQuadrants
-        val bLeft = b.quadrant in leftQuadrants
+        val quadrantA = a.quadrant
+        val quadrantB = b.quadrant
 
-        return when {
-            aLeft != bLeft -> aLeft.compareTo(bLeft)
-            a.adjacent == 0 && b.adjacent == 0 -> a.opposite.sign.compareTo(b.opposite.sign)
-            else -> (b cross a).sign
+        return if (quadrantA == quadrantB) {
+            val oppositeA = a.opposite * b.adjacent
+            val oppositeB = b.opposite * a.adjacent
+            oppositeA.compareTo(oppositeB)
+        } else {
+            quadrantA.toInt().compareTo(quadrantB.toInt())
         }
     }
 }
