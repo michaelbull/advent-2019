@@ -8,7 +8,7 @@ sealed class Quadrant {
         override fun toString() = "Quadrant.I"
     }
 
-    object IV : Quadrant() {
+    object II : Quadrant() {
         override fun toString() = "Quadrant.II"
     }
 
@@ -16,7 +16,7 @@ sealed class Quadrant {
         override fun toString() = "Quadrant.III"
     }
 
-    object II : Quadrant() {
+    object IV : Quadrant() {
         override fun toString() = "Quadrant.IV"
     }
 }
