@@ -13,13 +13,16 @@ class Robot {
         private set
 
     suspend fun paint(hull: Hull, program: Intcode): Set<Position> {
-        var state: RobotState = RobotState.Painting
+        var state: RobotState = RobotState.Detect
         val paintedPanels = mutableSetOf<Position>()
         val computer = IntcodeComputer()
 
         computer.memory = program
 
         computer.onInput {
+            check(state == RobotState.Detect)
+            state = RobotState.Paint
+
             when (hull[position]) {
                 PanelColor.Black -> 0
                 PanelColor.White -> 1
@@ -28,16 +31,16 @@ class Robot {
 
         computer.onOutput { value ->
             when (state) {
-                RobotState.Painting -> {
+                RobotState.Paint -> {
                     hull[position] = value.toPanelColor()
                     paintedPanels += position
-                    state = RobotState.Turning
+                    state = RobotState.Turn
                 }
 
-                RobotState.Turning -> {
+                RobotState.Turn -> {
                     turn(value.toTurnInstruction())
                     move()
-                    state = RobotState.Painting
+                    state = RobotState.Detect
                 }
             }
         }
