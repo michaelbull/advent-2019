@@ -1,6 +1,5 @@
 package com.github.michaelbull.advent.day10
 
-/* https://www.reddit.com/r/adventofcode/comments/e8r1jx/day_10_part_2_discrete_anglecomparing_function_ie/ */
 object TangentComparator : Comparator<Tangent> {
 
     private val clockwiseQuadrants = listOf(
