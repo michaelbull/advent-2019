@@ -24,7 +24,7 @@ data class Tangent(
     }
 
     fun simplify(): Tangent {
-        return this / greatestCommonDivisor(opposite, adjacent)
+        return this / greatestCommonDivisor(adjacent, opposite)
     }
 
     private tailrec fun greatestCommonDivisor(a: Int, b: Int): Int {
