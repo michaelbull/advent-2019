@@ -10,44 +10,43 @@ data class AsteroidMap(
 
     fun detectableAsteroids(from: Position): Int {
         return asteroids
-            .filter { to -> to != from }
-            .map { to -> (to - from).simplify() }
+            .filter { it != from }
+            .map { from tangentTo it }
             .distinct()
             .size
     }
 
     fun vaporize(from: Position) = sequence {
-        val lineIterators = lines(from).map(List<Position>::iterator)
-        val queue = ArrayDeque(lineIterators)
+        val rays = ArrayDeque(raycast(from).map(List<Position>::iterator))
 
-        while (queue.isNotEmpty()) {
-            val lineIterator = queue.removeFirst()
+        while (rays.isNotEmpty()) {
+            val ray = rays.removeFirst()
 
-            val vaporized = lineIterator.next()
+            val vaporized = ray.next()
             yield(vaporized)
 
-            if (lineIterator.hasNext()) {
-                queue.addLast(lineIterator)
+            if (ray.hasNext()) {
+                rays.addLast(ray)
             }
         }
     }
 
-    private operator fun Position.minus(other: Position): Tangent {
-        val adjacent = this.x - other.x
-        val opposite = this.y - other.y
-        return Tangent(adjacent, opposite)
+    private infix fun Position.tangentTo(other: Position): Tangent {
+        val adjacent = other.x - x
+        val opposite = other.y - y
+        return Tangent(adjacent, opposite).simplify()
     }
 
-    private fun lines(from: Position): Collection<List<Position>> {
-        return asteroidsByTangent(from)
-            .values
-            .map { it.sortedBy(from::distanceTo) }
+    private fun raycast(from: Position): List<List<Position>> {
+        return asteroidsByTangent(from).values.map {
+            it.sortedBy(from::distanceTo)
+        }
     }
 
     private fun asteroidsByTangent(from: Position): SortedMap<Tangent, List<Position>> {
         return asteroids.asSequence()
-            .filter { to -> to != from }
-            .groupBy { to -> (to - from).simplify() }
+            .filter { it != from }
+            .groupBy { from tangentTo it }
             .toSortedMap(TangentComparator)
     }
 }
