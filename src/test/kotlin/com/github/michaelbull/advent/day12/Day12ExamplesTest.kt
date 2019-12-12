@@ -12,36 +12,38 @@ import java.util.stream.Stream.of
 
 class Day12ExamplesTest {
 
-    private val moons = listOf(
-        Moon(Position(-1, 0, 2)),
-        Moon(Position(2, -10, -7)),
-        Moon(Position(4, -8, 8)),
-        Moon(Position(3, 5, -1))
+    private val planet = Planet(
+        moons = listOf(
+            Moon(Position(-1, 0, 2)),
+            Moon(Position(2, -10, -7)),
+            Moon(Position(4, -8, 8)),
+            Moon(Position(3, 5, -1))
+        )
     )
 
     @ArgumentsSource(Part1Examples::class)
     @ParameterizedTest(name = "after {0} steps: {1}")
-    fun part1Examples(steps: Int, expectedMoons: List<Moon>) {
-        val actualMoons = simulateMotion(moons).elementAt(steps - 1)
-        assertEquals(expectedMoons, actualMoons)
+    fun part1Examples(steps: Int, expected: Planet) {
+        val actual = simulateMotion(planet).elementAt(steps - 1)
+        assertEquals(expected, actual)
     }
 
     @Test
     fun part1TotalEnergy() {
-        val actualEnergy = simulateMotion(moons).elementAt(9).totalEnergy()
+        val actualEnergy = simulateMotion(planet).elementAt(9).totalEnergy
         assertEquals(179, actualEnergy)
     }
 
     @Test
     fun part2Example() {
-        assertEquals(2772, moons.part2())
+        assertEquals(2772, planet.part2())
     }
 
     private data class Part1Arguments(
         val steps: Int,
         val moons: List<Moon>
     ) : Arguments {
-        override fun get() = arrayOf(steps, moons)
+        override fun get() = arrayOf(steps, Planet(moons))
     }
 
     private class Part1Examples : ArgumentsProvider {

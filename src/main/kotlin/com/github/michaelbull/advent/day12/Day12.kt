@@ -1,43 +1,40 @@
 package com.github.michaelbull.advent.day12
 
-fun readMoons(): List<Moon> {
+fun readPlanet(): Planet {
     return ClassLoader.getSystemResourceAsStream("day12.txt")
         .bufferedReader()
-        .useLines { it.map(String::toMoon).toList() }
+        .readLines()
+        .toPlanet()
 }
 
-fun List<Moon>.totalEnergy(): Int {
-    return sumBy(Moon::totalEnergy)
+fun Planet.part1(): Int {
+    return simulateMotion(this).elementAt(999).totalEnergy
 }
 
-fun List<Moon>.part1(): Int {
-    return simulateMotion(this).elementAt(999).totalEnergy()
-}
-
-fun List<Moon>.part2(): Long {
+fun Planet.part2(): Long {
     val visitors = listOf(
         visitor { x },
         visitor { y },
         visitor { z }
     )
 
-    for (moons in simulateMotion(this)) {
-        visitors.filterNot(MoonsVisitor::finished).forEach {
-            it.visit(moons)
+    for (planet in simulateMotion(this)) {
+        visitors.filterNot(PlanetVisitor::finished).forEach {
+            it.visit(planet)
         }
 
-        if (visitors.all(MoonsVisitor::finished)) {
+        if (visitors.all(PlanetVisitor::finished)) {
             break
         }
     }
 
     return visitors
-        .map(MoonsVisitor::cycleLength)
+        .map(PlanetVisitor::cycleLength)
         .reduce(::leastCommonMultiple)
 }
 
 fun main() {
-    val moons = readMoons()
-    println("part 1 = ${moons.part1()}")
-    println("part 2 = ${moons.part2()}")
+    val jupiter = readPlanet()
+    println("part 1 = ${jupiter.part1()}")
+    println("part 2 = ${jupiter.part2()}")
 }

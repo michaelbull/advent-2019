@@ -1,9 +1,7 @@
 package com.github.michaelbull.advent.day12
 
-fun List<Moon>.visitor(velocityDimension: Velocity.() -> Int) = MoonsVisitor(this, velocityDimension)
-
-class MoonsVisitor(
-    initial: List<Moon>,
+class PlanetVisitor(
+    planet: Planet,
     private val dimension: Velocity.() -> Int
 ) {
 
@@ -14,10 +12,10 @@ class MoonsVisitor(
         get() = cycleLength != 0L
 
     private var visits = 0L
-    private val initial = initial.map { it.velocity.dimension() }
+    private val initial = planet.initialVelocities()
 
-    fun visit(moons: List<Moon>) {
-        val velocities = moons.map { it.velocity.dimension() }
+    fun visit(planet: Planet) {
+        val velocities = planet.initialVelocities()
 
         visits++
 
@@ -25,5 +23,9 @@ class MoonsVisitor(
             /* https://www.reddit.com/r/adventofcode/comments/e9nqpq/day_12_part_2_2x_faster_solution/ */
             cycleLength = visits * 2
         }
+    }
+
+    private fun Planet.initialVelocities(): List<Int> {
+        return moons.map { it.velocity.dimension() }
     }
 }

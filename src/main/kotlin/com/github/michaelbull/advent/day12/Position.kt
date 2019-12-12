@@ -17,12 +17,8 @@ data class Position(
 private val REGEX = Regex("""<x=(.+), y=(.+), z=(.+)>""")
 
 fun String.toPosition(): Position {
-    val values = REGEX.matchEntire(this)?.groupValues
-    requireNotNull(values) { "$this does not match $REGEX" }
-
-    return Position(
-        x = values[1].toInt(),
-        y = values[2].toInt(),
-        z = values[3].toInt()
-    )
+    val result = REGEX.matchEntire(this)
+    val values = result!!.groupValues.drop(1)
+    val (x, y, z) = values.map(String::toInt)
+    return Position(x, y, z)
 }
