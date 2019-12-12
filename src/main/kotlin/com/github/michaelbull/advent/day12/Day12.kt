@@ -16,17 +16,14 @@ fun List<Moon>.part1(): Int {
 
 fun List<Moon>.part2(): Long {
     val visitors = listOf(
-        visitor({ x }, { x }),
-        visitor({ y }, { y }),
-        visitor({ z }, { z })
+        visitor { x },
+        visitor { y },
+        visitor { z }
     )
 
-    var step = 0L
     for (moons in simulateMotion(this)) {
-        step++
-
-        visitors.filterNot(MoonsVisitor::finished).forEach { visitor ->
-            visitor.visit(step, moons)
+        visitors.filterNot(MoonsVisitor::finished).forEach {
+            it.visit(moons)
         }
 
         if (visitors.all(MoonsVisitor::finished)) {
