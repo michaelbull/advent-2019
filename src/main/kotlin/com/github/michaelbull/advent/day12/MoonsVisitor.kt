@@ -1,20 +1,31 @@
 package com.github.michaelbull.advent.day12
 
+fun List<Moon>.visitor(
+    positionDimension: Position.() -> Int,
+    velocityDimension: Velocity.() -> Int
+) = MoonsVisitor(this, positionDimension, velocityDimension)
+
 class MoonsVisitor(
+    initial: List<Moon>,
     private val positionDimension: Position.() -> Int,
     private val velocityDimension: Velocity.() -> Int
 ) {
 
-    private val visited = mutableSetOf<List<Pair<Int, Int>>>()
+    private val initialPositions = initial.map { it.position.positionDimension() }
+    private val initialVelocities = initial.map { it.velocity.velocityDimension() }
 
-    val size: Int
-        get() = visited.size
+    var cycleLength = 0L
+        private set
 
-    fun visit(moons: List<Moon>): Boolean {
-        return visited.add(moons.map(::pairDimensions))
-    }
+    val finished: Boolean
+        get() = cycleLength != 0L
 
-    private fun pairDimensions(moon: Moon): Pair<Int, Int> {
-        return positionDimension(moon.position) to velocityDimension(moon.velocity)
+    fun visit(step: Long, moons: List<Moon>) {
+        val positions = moons.map { it.position.positionDimension() }
+        val velocities = moons.map { it.velocity.velocityDimension() }
+
+        if (positions == initialPositions && velocities == initialVelocities) {
+            cycleLength = step
+        }
     }
 }
