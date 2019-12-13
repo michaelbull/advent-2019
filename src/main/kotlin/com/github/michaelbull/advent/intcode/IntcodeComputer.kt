@@ -46,6 +46,10 @@ class IntcodeComputer {
         }
     }
 
+    operator fun get(address: Long): Long {
+        return _memory.getValue(address)
+    }
+
     operator fun set(address: Long, value: Long) {
         _memory[address] = value
     }

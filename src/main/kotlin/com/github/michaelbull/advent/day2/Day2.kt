@@ -20,17 +20,17 @@ private const val NOUN_ADDRESS = 1L
 private const val VERB_ADDRESS = 2L
 
 val IntcodeComputer.output: Long
-    get() = memory.getValue(OUTPUT_ADDRESS)
+    get() = get(OUTPUT_ADDRESS)
 
 var IntcodeComputer.noun: Long
-    get() = memory.getValue(NOUN_ADDRESS)
+    get() = get(NOUN_ADDRESS)
     set(value) {
         require(value in NOUN_RANGE) { "noun must be in range [$NOUN_RANGE], but was $value" }
         set(NOUN_ADDRESS, value)
     }
 
 var IntcodeComputer.verb: Long
-    get() = memory.getValue(VERB_ADDRESS)
+    get() = get(VERB_ADDRESS)
     set(value) {
         require(value in VERB_RANGE) { "verb must be in range [$VERB_RANGE], but was $value" }
         set(VERB_ADDRESS, value)
