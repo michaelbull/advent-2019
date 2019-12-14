@@ -8,7 +8,7 @@ data class Reaction(
 private val REGEX = Regex("""(\d+) ([A-Z]+)""")
 
 private fun chemicalAmount(result: MatchResult): ChemicalAmount {
-    val amount = result.groupValues[1].toInt()
+    val amount = result.groupValues[1].toLong()
     val chemical = Chemical(result.groupValues[2])
     return ChemicalAmount(chemical, amount)
 }
