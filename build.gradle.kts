@@ -25,7 +25,6 @@ tasks {
     }
 
     test {
-        failFast = true
         useJUnitPlatform()
     }
 }

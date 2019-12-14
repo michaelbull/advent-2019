@@ -14,24 +14,30 @@ class NanoFactory(reactions: List<Reaction>) {
 
     private fun Chemical.amountToProduce(
         target: ChemicalAmount,
-        excess: MutableMap<Chemical, Long> = mutableMapOf()
+        excess: ChemicalExcess = ChemicalExcess()
     ): Long {
-        val (inputs, output) = reactionsByChemical.getValue(target.chemical)
-        val availableExcess = excess.getOrElse(target.chemical) { 0L }
-        val neededAmount = (target.amount - availableExcess).coerceAtLeast(0)
-        val repetitions = neededAmount / output.amount + if (neededAmount % output.amount == 0L) 0 else 1
-        val additionalExcess = output.amount * repetitions - target.amount
+        val availableExcess = excess[target.chemical]
+        val excessAfterUsage = availableExcess - target.amount
 
-        excess[target.chemical] = availableExcess + additionalExcess
+        return if (excessAfterUsage >= 0L) {
+            excess[target.chemical] = excessAfterUsage
+            0
+        } else {
+            val (inputs, output) = reactionsByChemical.getValue(target.chemical)
+            val repetitions = (output.amount - excessAfterUsage - 1) / output.amount
+            val additionalExcess = (output.amount * repetitions) - target.amount
 
-        return inputs.sumByLong { (chemical, amount) ->
-            val required = amount * repetitions
+            excess[target.chemical] = availableExcess + additionalExcess
 
-            if (chemical == this) {
-                required
-            } else {
-                val newTarget = ChemicalAmount(chemical, required)
-                amountToProduce(newTarget, excess)
+            inputs.sumByLong { (chemical, amount) ->
+                val required = amount * repetitions
+
+                if (chemical == this) {
+                    required
+                } else {
+                    val newTarget = ChemicalAmount(chemical, required)
+                    amountToProduce(newTarget, excess)
+                }
             }
         }
     }
