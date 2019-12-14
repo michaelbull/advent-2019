@@ -9,7 +9,7 @@ class NanoFactory(reactions: List<Reaction>) {
     }
 
     fun producableFuel(): Long {
-        return ONE_TRILLION_ORE.producableAmountOf(FUEL)
+        return FUEL.amountProducedBy(ONE_TRILLION_ORE)
     }
 
     private fun Chemical.amountToProduce(
@@ -36,9 +36,9 @@ class NanoFactory(reactions: List<Reaction>) {
         }
     }
 
-    private fun ChemicalAmount.producableAmountOf(target: Chemical): Long {
+    private fun Chemical.amountProducedBy(cargo: ChemicalAmount): Long {
         var upperBound = 1L
-        while (chemical.amountToProduce(ChemicalAmount(target, upperBound)) < amount) {
+        while (cargo.chemical.amountToProduce(ChemicalAmount(this, upperBound)) < cargo.amount) {
             upperBound *= 2
         }
 
@@ -47,11 +47,11 @@ class NanoFactory(reactions: List<Reaction>) {
 
         while (low <= high) {
             val mid = (low + high) ushr 1
-            val midVal = chemical.amountToProduce(ChemicalAmount(target, mid))
+            val midVal = cargo.chemical.amountToProduce(ChemicalAmount(this, mid))
 
-            if (midVal < amount) {
+            if (midVal < cargo.amount) {
                 low = mid + 1
-            } else if (midVal > amount) {
+            } else if (midVal > cargo.amount) {
                 high = mid - 1
             }
         }
