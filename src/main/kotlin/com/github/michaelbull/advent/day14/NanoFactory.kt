@@ -2,7 +2,7 @@ package com.github.michaelbull.advent.day14
 
 class NanoFactory(reactions: List<Reaction>) {
 
-    private val reactionsByChemical = reactions.associateBy { it.output.chemical }
+    private val reactionsByChemical = reactions.associateBy { it.output.name }
 
     fun oreForOneFuel(): Long {
         return ORE.amountToProduce(ONE_FUEL)
@@ -12,39 +12,38 @@ class NanoFactory(reactions: List<Reaction>) {
         return FUEL.amountProducedBy(ONE_TRILLION_ORE)
     }
 
-    private fun Chemical.amountToProduce(
-        target: ChemicalAmount,
+    private fun ChemicalName.amountToProduce(
+        chemical: Chemical,
         excess: ChemicalExcess = ChemicalExcess()
     ): Long {
-        val availableExcess = excess[target.chemical]
-        val excessAfterUsage = availableExcess - target.amount
+        val availableExcess = excess[chemical.name]
+        val excessAfterUsage = availableExcess - chemical.quantity
 
         return if (excessAfterUsage >= 0L) {
-            excess[target.chemical] = excessAfterUsage
+            excess[chemical.name] = excessAfterUsage
             0
         } else {
-            val (inputs, output) = reactionsByChemical.getValue(target.chemical)
-            val repetitions = (output.amount - excessAfterUsage - 1) / output.amount
-            val additionalExcess = (output.amount * repetitions) - target.amount
+            val (inputs, output) = reactionsByChemical.getValue(chemical.name)
+            val repetitions = (output.quantity - excessAfterUsage - 1) / output.quantity
+            val additionalExcess = (output.quantity * repetitions) - chemical.quantity
 
-            excess[target.chemical] = availableExcess + additionalExcess
+            excess[chemical.name] = availableExcess + additionalExcess
 
-            inputs.sumByLong { (chemical, amount) ->
-                val required = amount * repetitions
+            inputs.sumByLong { (chemical, quantity) ->
+                val amount = quantity * repetitions
 
                 if (chemical == this) {
-                    required
+                    amount
                 } else {
-                    val newTarget = ChemicalAmount(chemical, required)
-                    amountToProduce(newTarget, excess)
+                    amountToProduce(chemical * amount, excess)
                 }
             }
         }
     }
 
-    private fun Chemical.amountProducedBy(cargo: ChemicalAmount): Long {
+    private fun ChemicalName.amountProducedBy(chemical: Chemical): Long {
         var upperBound = 1L
-        while (cargo.chemical.amountToProduce(ChemicalAmount(this, upperBound)) < cargo.amount) {
+        while (chemical.name.amountToProduce(this * upperBound) < chemical.quantity) {
             upperBound *= 2
         }
 
@@ -53,11 +52,11 @@ class NanoFactory(reactions: List<Reaction>) {
 
         while (low <= high) {
             val mid = (low + high) ushr 1
-            val midVal = cargo.chemical.amountToProduce(ChemicalAmount(this, mid))
+            val midVal = chemical.name.amountToProduce(this * mid)
 
-            if (midVal < cargo.amount) {
+            if (midVal < chemical.quantity) {
                 low = mid + 1
-            } else if (midVal > cargo.amount) {
+            } else if (midVal > chemical.quantity) {
                 high = mid - 1
             }
         }
@@ -74,9 +73,9 @@ class NanoFactory(reactions: List<Reaction>) {
     }
 
     private companion object {
-        private val ORE = Chemical("ORE")
-        private val FUEL = Chemical("FUEL")
-        private val ONE_FUEL = ChemicalAmount(FUEL, 1)
-        private val ONE_TRILLION_ORE = ChemicalAmount(ORE, 1_000_000_000_000)
+        private val ORE = ChemicalName("ORE")
+        private val FUEL = ChemicalName("FUEL")
+        private val ONE_FUEL = 1L * FUEL
+        private val ONE_TRILLION_ORE = 1_000_000_000_000 * ORE
     }
 }

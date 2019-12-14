@@ -2,17 +2,17 @@ package com.github.michaelbull.advent.day14
 
 class ChemicalExcess {
 
-    private val excess = mutableMapOf<Chemical, Long>().withDefault { 0 }
+    private val excess = mutableMapOf<ChemicalName, Long>().withDefault { 0 }
 
-    operator fun set(chemical: Chemical, amount: Long) {
+    operator fun set(chemical: ChemicalName, quantity: Long) {
         when {
-            amount == 0L -> excess.remove(chemical)
-            amount > 0L -> excess[chemical] = amount
-            else -> throw IllegalArgumentException("excess $chemical amount must be non-negative, was $amount")
+            quantity == 0L -> excess.remove(chemical)
+            quantity > 0L -> excess[chemical] = quantity
+            else -> throw IllegalArgumentException("$chemical quantity must be non-negative, was $quantity")
         }
     }
 
-    operator fun get(chemical: Chemical): Long {
+    operator fun get(chemical: ChemicalName): Long {
         return excess.getValue(chemical)
     }
 }
